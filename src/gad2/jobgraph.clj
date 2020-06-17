@@ -25,14 +25,15 @@
 ;;         row-entries (map #(select-keys % outxs) rows)]
 ;;     (vec (distinct row-entries))))
 
-;; (defn precompute-xs
-;;   [dwx xs]
-;;   (let [fromx-tox (distinct (for [[_ fx _ tx] dwx] [fx tx]))]
-;;     (for [[fx tx] #p fromx-tox
-;;           :let [subsetted #p (map #(select-keys % (conj fx tx)) xs)
-;;                 grouped #p (group-by #(select-keys % fx) subsetted)
-;;                 subsetted #p (into {} (for [[k v] grouped] [k (distinct (select-keys v tx))]))]]
-;;       {[fx tx] subsetted})))
+(defn precompute-xs
+  [dwx xs]
+  (let [fromx-tox (distinct (for [[_ fx _ tx] dwx] [fx tx]))]
+    (for [[fx tx] fromx-tox
+          :let [subsetted (mapv #(select-keys % (concat fx tx)) xs)
+                grouped (group-by #(select-keys % fx) subsetted)
+                subsetted (into {} (for [[k v] grouped] [k (mapv #(select-keys % tx) v)]))
+                ]]
+      {[fx tx] subsetted})))
 
 ;; (defn jobgraph
 ;;   [rulegraph rules xs]
