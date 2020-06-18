@@ -5,6 +5,7 @@
             [midje.sweet :as midje])
   (:use [midje.sweet]))
 
+
 (facts "about `jobgraph`"
 
        (sut/jobgraph (rulegraph snakemake-rules) snakemake-rules xs)

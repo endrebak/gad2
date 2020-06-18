@@ -19,23 +19,26 @@
          [:samtools-sort [:sample :genome] :bwa-map [:sample :genome]])
        )
 
+
 (facts "about `precompute-xs`"
 
        (precompute-xs dwx xs)
 
        =>
 
-       {[[:genome] [:genome]] {{:genome "hg19"} [{:genome "hg19"}]
-                               {:genome "hg38"} [{:genome "hg38"}]}
-        [[:genome] [:sample :genome]] {{:genome "hg19"} [{:genome "hg19" :sample "A"}
-                                                         {:genome "hg19" :sample "B"}]
-                                       {:genome "hg38"} [{:genome "hg38" :sample "A"}
-                                                         {:genome "hg38" :sample "B"}]}
-        [[:sample :genome] [:sample :genome]] {{:genome "hg19" :sample "A"} [{:genome "hg19"
-                                                                              :sample "A"}]
-                                               {:genome "hg19" :sample "B"} [{:genome "hg19"
-                                                                              :sample "B"}]
-                                               {:genome "hg38" :sample "A"} [{:genome "hg38"
-                                                                              :sample "A"}]
-                                               {:genome "hg38" :sample "B"} [{:genome "hg38"
-                                                                              :sample "B"}]}})
+       {[[:genome] [:genome]] [[{:genome "hg19"} [{:genome "hg19"}]]
+                               [{:genome "hg38"} [{:genome "hg38"}]]]
+        [[:genome] [:sample :genome]] [[{:genome "hg19"}
+                                        [{:genome "hg19" :sample "A"}
+                                         {:genome "hg19" :sample "B"}]]
+                                       [{:genome "hg38"}
+                                        [{:genome "hg38" :sample "A"}
+                                         {:genome "hg38" :sample "B"}]]]
+        [[:sample :genome] [:sample :genome]] [[{:genome "hg19" :sample "A"}
+                                                [{:genome "hg19" :sample "A"}]]
+                                               [{:genome "hg19" :sample "B"}
+                                                [{:genome "hg19" :sample "B"}]]
+                                               [{:genome "hg38" :sample "A"}
+                                                [{:genome "hg38" :sample "A"}]]
+                                               [{:genome "hg38" :sample "B"}
+                                                [{:genome "hg38" :sample "B"}]]]})

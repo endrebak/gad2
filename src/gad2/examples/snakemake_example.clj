@@ -12,7 +12,7 @@
          {:genome "hg19" :sample "B"}
          {:genome "hg38" :sample "A"}
          {:genome "hg38" :sample "B"}
-         ;; {:genome "hg38" :sample "C"}
+         {:genome "hg38" :sample "C"}
          ])
 
 
