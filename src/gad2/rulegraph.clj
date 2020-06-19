@@ -1,11 +1,8 @@
 (ns gad2.rulegraph
   (:require
    [hashp.core]
-   [gad2.helpers :refer [infile->rule outfile->rule]]
+   [gad2.helpers :refer [infile->rule outfile->rule add-dependency]]
    [com.stuartsierra.dependency :as dep]))
-
-(defn add-dependency [g [a b]]
-  (dep/depend g a b))
 
 (defn rulegraph
   [rules]
