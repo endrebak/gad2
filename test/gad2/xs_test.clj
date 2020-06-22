@@ -1,13 +1,13 @@
 (ns gad2.xs-test
-  (:require [gad2.xs :refer :all]
+  (:require [gad2.wildcards :refer :all]
             [gad2.rulegraph :refer :all]
-            [gad2.examples.snakemake-example :refer [snakemake-rules xs]]
+            [gad2.examples.snakemake-example :refer [snakemake-rules wildcards]]
             [midje.sweet :as midje])
   (:use [midje.sweet]))
 
-(def dwx (deps-with-xs (rulegraph snakemake-rules) snakemake-rules))
+(def dwx (deps-with-wildcards (rulegraph snakemake-rules) snakemake-rules))
 
-(facts "about `deps-with-xs`"
+(facts "about `deps-with-wildcards`"
        dwx
 
        =>
@@ -20,9 +20,9 @@
        )
 
 
-(facts "about `precompute-xs`"
+(facts "about `precompute-wildcards`"
 
-       (precompute-xs dwx xs)
+       (precompute-wildcards dwx wildcards)
 
        =>
 

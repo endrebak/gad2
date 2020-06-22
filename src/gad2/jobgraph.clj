@@ -1,51 +1,51 @@
 (ns gad2.jobgraph
-  (:require [gad2.xs :refer [deps-with-xs precompute-xs]]
+  (:require [gad2.wildcards :refer [deps-with-wildcards precompute-wildcards]]
             [gad2.helpers :refer [add-dependency]]
             [com.stuartsierra.dependency :as dep]))
 
 
 (defn get-files
   [rule]
-  (let [fs (rule :out)
+  (let [fs (rule :output)
         fs (if (map? fs) (vec (vals fs)) [fs])]
     fs))
 
 
-(defn combine-xs-&-outfile->child
-  [xs outfiles child]
-  (for [[xcs _] xs
+(defn combine-wildcards-&-outfile->child
+  [wildcards outfiles child]
+  (for [[xcs _] wildcards
         outfile outfiles]
     [[outfile xcs] [child xcs]]))
 
 
-(defn combine-xs-&-infile->parent
-  [xs child infiles]
-  (apply concat (for [[xcs xps] xs
+(defn combine-wildcards-&-infile->parent
+  [wildcards child infiles]
+  (apply concat (for [[xcs xps] wildcards
                       infile infiles]
                   (for [xp xps]
                     [[child xcs] [infile xp]]))))
 
 
-(defn combine-xs-&-targets
-  [nxs outfiles child infiles]
-  (let [o->c (combine-xs-&-outfile->child nxs outfiles child)
-        i->p (combine-xs-&-infile->parent nxs child infiles)]
+(defn combine-wildcards-&-targets
+  [nwildcards outfiles child infiles]
+  (let [o->c (combine-wildcards-&-outfile->child nwildcards outfiles child)
+        i->p (combine-wildcards-&-infile->parent nwildcards child infiles)]
   (concat o->c i->p)))
 
 
 (defn jobgraph-pairs
-  [rulegraph rules xs]
-  (let [dwx (deps-with-xs rulegraph rules)
-        pxs (precompute-xs dwx xs)]
+  [rulegraph rules wildcards]
+  (let [dwx (deps-with-wildcards rulegraph rules)
+        pwildcards (precompute-wildcards dwx wildcards)]
     (apply concat
-           (for [[child childxs parent parentxs] dwx
+           (for [[child childwildcards parent parentwildcards] dwx
                  :let [outfiles (get-files (rules child))
                        infiles (get-files (rules parent))
-                       nxs (pxs [childxs parentxs])]]
-             (combine-xs-&-targets nxs outfiles child infiles)))))
+                       nwildcards (pwildcards [childwildcards parentwildcards])]]
+             (combine-wildcards-&-targets nwildcards outfiles child infiles)))))
 
 
 (defn jobgraph
-  [rulegraph rules xs]
-  (let [pairs (jobgraph-pairs rulegraph rules xs)]
+  [rulegraph rules wildcards]
+  (let [pairs (jobgraph-pairs rulegraph rules wildcards)]
     (reduce add-dependency (dep/graph) pairs)))

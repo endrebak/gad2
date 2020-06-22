@@ -8,8 +8,11 @@
                  [hashp "0.1.1"]
                  [com.stuartsierra/dependency "1.0.0"]
                  [org.clojure/data.csv "1.0.0"]
-
+                 [ring/ring-core "1.6.3"]
+                 [ring/ring-jetty-adapter "1.6.3"]
                  [midje "1.9.9"]]
+  :plugins [[lein-ring "0.12.5"]]
+  :ring {:handler gad2.server/handler}
   :main ^:skip-aot gad2.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

@@ -1,14 +1,14 @@
 (ns gad2.jobgraph-test
   (:require [gad2.jobgraph :as sut]
             [gad2.rulegraph :refer [rulegraph]]
-            [gad2.examples.snakemake-example :refer [snakemake-rules xs]]
+            [gad2.examples.snakemake-example :refer [snakemake-rules wildcards]]
             [midje.sweet :as midje])
   (:use [midje.sweet]))
 
 
-(facts "about `jobgraph-map`"
+(facts "about `jobgraph-pairs`"
 
-       (sut/jobgraph-pairs (rulegraph snakemake-rules) snakemake-rules xs)
+       (sut/jobgraph-pairs (rulegraph snakemake-rules) snakemake-rules wildcards)
 
        =>
 
@@ -85,7 +85,7 @@
 
 (facts "about `jobgraph`"
 
-       (sut/jobgraph (rulegraph snakemake-rules) snakemake-rules xs)
+       (sut/jobgraph (rulegraph snakemake-rules) snakemake-rules wildcards)
 
        =>
 
