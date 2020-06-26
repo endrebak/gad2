@@ -10,6 +10,8 @@
                  [org.clojure/data.csv "1.0.0"]
                  [ring/ring-core "1.6.3"]
                  [ring/ring-jetty-adapter "1.6.3"]
+                 [hawk "0.2.11"]
+                 [org.clojure/tools.logging "0.5.0"]
                  [midje "1.9.9"]]
   :plugins [[lein-ring "0.12.5"]]
   :ring {:handler gad2.server/handler}
