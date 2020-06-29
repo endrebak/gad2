@@ -21,6 +21,6 @@
                      :samtools-index #{:bcftools-call}
                      :samtools-sort #{:bcftools-call :samtools-index}}})
 
-(def r (rulegraph snakemake-rules))
+;; (def r (rulegraph snakemake-rules))
 
 ;; #p snakemake-rules

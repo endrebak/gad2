@@ -4,7 +4,7 @@
             [gad2.server :as server]
             [gad2.state :as state]
             [gad2.nrepl :refer [start-nrepl]]
-            [gad2.parse-workflow :refer [defrule]]
+            [gad2.parse-rulefiles :refer [defrule]]
             [hawk.core :as hawk]
             ;; [gad2.filewatch :refer [watcher]]
             [ring.adapter.jetty :as jetty]))

@@ -1,7 +1,8 @@
 (ns gad2.jobgraph
   (:require [gad2.wildcards :refer [deps-with-wildcards precompute-wildcards]]
             [gad2.helpers :refer [add-dependency]]
-            [com.stuartsierra.dependency :as dep]))
+            [com.stuartsierra.dependency :as dep]
+            [clojure.set :as set]))
 
 
 (defn get-files
@@ -45,7 +46,25 @@
              (combine-wildcards-&-targets nwildcards outfiles child infiles)))))
 
 
+(defn jobs-without-dependencies-pairs
+  [rulegraph rules wildcards]
+  (let [dependencyless-rules
+        (set/difference
+         (set (keys (:dependents rulegraph)))
+         (set (keys (:dependencies rulegraph))))]
+    (apply concat
+           (for [r dependencyless-rules
+                 :let [rule (rules r)
+                       outfiles (get-files rule)
+                       rule-wildcards (:wildcards rule)
+                       wildcards-subset (mapv #(select-keys % rule-wildcards) wildcards)]]
+             (for [wc wildcards-subset
+                   outfile outfiles]
+               [[outfile wc] [r wc]])))))
+
+
 (defn jobgraph
   [rulegraph rules wildcards]
-  (let [pairs (jobgraph-pairs rulegraph rules wildcards)]
-    (reduce add-dependency (dep/graph) pairs)))
+  (let [pairs (jobgraph-pairs rulegraph rules wildcards)
+        pairs2 (jobs-without-dependencies-pairs rulegraph rules wildcards)]
+    (reduce add-dependency (dep/graph) (concat pairs pairs2))))

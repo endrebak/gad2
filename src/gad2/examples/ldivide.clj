@@ -1,5 +1,5 @@
 (ns gad2.examples.ldivide
-  (:require [gad2.parse-workflow :refer [defrule]]))
+  (:require [gad2.parse-rulefiles :refer [defrule]]))
 
 
 (def wildcards
@@ -45,7 +45,7 @@
            :variants "1kg/chromosome.vcf.gz"
            :index "1kg/chromosome.vcf.gz.tbi"}
    :output "population_subset_vcf.pq"
-   :shell "bcftools view --threads 48 --force-samples -S {inputput.samples} {inputput.variants} |
+   :shell "bcftools view --threads 48 --force-samples -S {input.samples} {input.variants} |
            bcftools query -f '%POS\t[%GT\t]\n' |
            tr '|' '\t' |
            python {scripts.to_parquet} {output} {input.samples}"})

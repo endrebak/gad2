@@ -1,4 +1,4 @@
-(ns gad2.xs-test
+(ns gad2.wildcards-test
   (:require [gad2.wildcards :refer :all]
             [gad2.rulegraph :refer :all]
             [gad2.examples.snakemake-example :refer [snakemake-rules wildcards]]

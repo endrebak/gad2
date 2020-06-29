@@ -5,6 +5,7 @@
             :url "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [[org.clojure/clojure "1.10.0"]
                  [com.rpl/specter "1.1.3"]
+                 [selmer "1.12.25"]
                  [hashp "0.1.1"]
                  [com.stuartsierra/dependency "1.0.0"]
                  [org.clojure/data.csv "1.0.0"]

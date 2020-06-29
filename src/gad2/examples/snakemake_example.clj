@@ -2,7 +2,7 @@
   (:require
    [hashp.core]
    [gad2.state :as state]
-   [gad2.parse-workflow :refer [defrule]]))
+   [gad2.parse-rulefiles :refer [defrule]]))
 
 
 (def streams

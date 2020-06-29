@@ -1,4 +1,4 @@
-(ns gad2.parse-workflow
+(ns gad2.parse-rulefiles
   (:import [java.io PushbackReader])
   (:require
    [clojure.java.io :as io]
