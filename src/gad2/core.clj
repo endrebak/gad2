@@ -1,5 +1,6 @@
 (ns gad2.core
   (:gen-class)
+  (:use [hashp.core])
   (:require [gad2.jobgraph]
             [gad2.server :as server]
             [gad2.state :as state]
@@ -7,13 +8,9 @@
             [gad2.parse-rulefiles :refer [defrule]]
             [hawk.core :as hawk]
             ;; [gad2.filewatch :refer [watcher]]
-            [ring.adapter.jetty :as jetty]))
-
-
-;; (defn jobgraph
-;;   [rule-file wildcard-file]
-;;   )
-
+            [clojure.edn :as edn]
+            [ring.adapter.jetty :as jetty]
+            [clojure.java.io :as io]))
 
 
 (defn read-from-file-with-trusted-contents [filename]
@@ -23,20 +20,58 @@
       (read r))))
 
 
+(defn read-args
+  [args]
+  (into {} (for [[k v] (partition 2 args)] [(keyword k) v])))
+
+(defn absolute-path
+  [path]
+  (.getAbsolutePath (io/as-file path)))
+
+;; {:readers {'path }}
+
+(defn config-files
+  [args]
+  (let [config-file (args :config-file)
+        config (edn/read-string (slurp config-file))
+        config-files (mapv config [:rule-file :wildcard-file])]
+    (conj config-files config-file)))
+
+
+(def watchers (atom {}))
+
+
+(defn handler [ctx {:keys [file kind]}]
+  ;; (println "event: " e)
+  (println (str file " " kind))
+  (println "context: " ctx)
+  ctx)
+
+
+(defn add-watcher [key paths handler]
+  (swap! watchers assoc key
+         (hawk/watch! [{:paths paths
+                        :handler handler}])))
+
+;; if
+
+;; update-config-paths
+;; collect-rules
+;; create-rulegraph
+;; read-wildcards
+;; create jobgraph
+
+
+; https://docs.oracle.com/javase/8/docs/
+
+;; (defn )
+
+(defn config-handler [ctx e]
+  ctx)
+
 
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (let [argmap (into {} (for [[k v] (partition 2 args)] [(keyword k) v]))
-        config-files (vals (select-keys argmap [:rule-file :wildcard-file]))]
-
-      (hawk/watch! [{:paths config-files
-                     :handler (fn [ctx e]
-                                (println "event: " e)
-                                (println "context: " ctx)
-                                ctx)}]))
-
-
-    ;; (swap! state/config #(merge state/config (select-keys [:rule-file :wildcard-file] args))))
-    )
-  ; (jetty/run-jetty server/handler {:port 3000}))
+  (let [config-paths (config-files (read-args args))]
+    (add-watcher :config-watcher config-paths handler)))
