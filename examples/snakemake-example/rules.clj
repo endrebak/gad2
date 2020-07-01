@@ -43,5 +43,3 @@
    :output {:plot "quals.svg" :data "quals.tsv"}
    :shell "plot {in} -o {out.0}"
    :script "plot-quals.py"})
-
-

@@ -33,4 +33,19 @@
           forms)))))
 
 
+(defn parse-rule
+  [[_ name & body]]
+  (let [name (keyword name)]
+    (if (= 2 (count body))
+      (assoc (second body) :doc (first body) :name name)
+      (assoc (first body) :name name))))
+
+
+(defn read-rules
+  [rule-file]
+  (let [rules (read-all rule-file)]
+    (for [rule rules]
+      )))
+
+
 (defn workflow-to-rules []) ; must take in rulefile, parse it, eval it

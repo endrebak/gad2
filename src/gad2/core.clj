@@ -13,11 +13,6 @@
             [clojure.java.io :as io]))
 
 
-(defn read-from-file-with-trusted-contents [filename]
-  (with-open [r (java.io.PushbackReader.
-                 (clojure.java.io/reader filename))]
-    (binding [*read-eval* false]
-      (read r))))
 
 
 (defn read-args
@@ -42,7 +37,6 @@
 
 
 (defn handler [ctx {:keys [file kind]}]
-  ;; (println "event: " e)
   (println (str file " " kind))
   (println "context: " ctx)
   ctx)
@@ -53,6 +47,7 @@
          (hawk/watch! [{:paths paths
                         :handler handler}])))
 
+
 ;; if
 
 ;; update-config-paths
@@ -60,7 +55,6 @@
 ;; create-rulegraph
 ;; read-wildcards
 ;; create jobgraph
-
 
 ; https://docs.oracle.com/javase/8/docs/
 
