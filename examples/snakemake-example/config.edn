@@ -1,2 +1,0 @@
-{:rule-file "examples/snakemake/rules.clj"
- :wildcard-file "examples/snakemake/wildcards.tsv"}

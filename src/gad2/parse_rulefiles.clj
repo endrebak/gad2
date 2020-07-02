@@ -44,8 +44,13 @@
 (defn read-rules
   [rule-file]
   (let [rules (read-all rule-file)]
-    (for [rule rules]
-      )))
+    (into {}
+          (for [rule rules
+                :let [rulemap (parse-rule rule)
+                      name (:name rulemap)]]
+            [name rulemap]))))
 
 
-(defn workflow-to-rules []) ; must take in rulefile, parse it, eval it
+;; (defn read-wildcards
+;;   [wildcards-file]
+;;   (edn/read-string (slurp wildcards-file))

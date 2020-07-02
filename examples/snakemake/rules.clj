@@ -1,7 +1,3 @@
-
-
-
-
 (defrule bwa-map
   "Map DNA sequences against a reference genome with BWA."
   {:wildcards [:sample :genome]
