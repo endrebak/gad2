@@ -16,11 +16,10 @@
             [clojure.java.io :as io]))
 
 
-
-
 (defn read-args
   [args]
   (into {} (for [[k v] (partition 2 args)] [(keyword k) v])))
+
 
 (defn absolute-path
   [path]
@@ -39,13 +38,14 @@
 (def config-file (atom ""))
 
 
-
 (defn add-watcher [key paths handler]
   (swap! watchers assoc key
          (hawk/watch! [{:paths paths
                         :handler handler}])))
 
+
 (declare config-handler)
+
 
 (defn reset-watcher
   []
@@ -59,10 +59,11 @@
   (let [config-map (edn/read-string (slurp config-file))
         rule-file (config-map :rule-file)
         wildcards-file (config-map :wildcards-file)
-        rules #p (read-rules rule-file)
-        wildcards #p (edn/read-string (slurp wildcards-file))
+        rules (read-rules rule-file)
+        wildcards (edn/read-string (slurp wildcards-file))
         rulegraph (rg/rulegraph rules)]
-    #p (jg/jobgraph rulegraph rules wildcards)))
+        (jg/jobgraph rulegraph rules wildcards)))
+
 
 ;; update-config-paths
 ;; collect-rules
@@ -70,17 +71,10 @@
 ;; read-wildcards
 ;; create jobgraph
 
+
 (defn config-handler [ctx {:keys [file kind]}]
   (reset-watcher)
-  (println "hi")
-  #p (jobgraph-from-config @config-file))
-
-;; if
-
-; https://docs.oracle.com/javase/8/docs/
-
-;; (defn )
-
+  (jobgraph-from-config @config-file))
 
 
 (defn -main
@@ -88,9 +82,8 @@
   [& args]
   (let [argmap (read-args args)]
 
-    #p (reset! config-file (argmap :config-file))
+    (reset! config-file (argmap :config-file))
 
-    (add-watcher :config-watcher #p (config-files @config-file) config-handler)
+    (add-watcher :config-watcher (config-files @config-file) config-handler)
 
-
-    ))
+    (server/start!)))
