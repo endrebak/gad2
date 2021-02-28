@@ -2,7 +2,7 @@
   (:gen-class)
   (:use [hashp.core])
   (:require [gad2.jobgraph]
-            [gad2.server :as server]
+            ;; [gad2.server :as server]
             [gad2.rulegraph :as rg]
             [gad2.jobgraph :as jg]
             [gad2.state :as state]
@@ -77,13 +77,13 @@
   (jobgraph-from-config @config-file))
 
 
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (let [argmap (read-args args)]
+;; (defn -main
+;;   "I don't do a whole lot ... yet."
+;;   [& args]
+;;   (let [argmap (read-args args)]
 
-    (reset! config-file (argmap :config-file))
+;;     (reset! config-file (argmap :config-file))
 
-    (add-watcher :config-watcher (config-files @config-file) config-handler)
+;;     (add-watcher :config-watcher (config-files @config-file) config-handler)
 
-    (server/start!)))
+;;     (server/start!)))
