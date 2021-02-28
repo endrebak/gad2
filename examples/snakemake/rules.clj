@@ -5,7 +5,7 @@
    :output "bwa-map.bam"
    :threads 8
    :params {:rg "@RG\tID:{sample}\tSM:{sample}"}
-   :shell "bwa mem -R '{params.rg}' {threads} {ext.genome} {ext.fastq} | samtools view -Sb - > {out}"})
+   :shell "bwa mem -R '{params.rg}' {threads} {file.genome} {file.fastq} | samtools view -Sb - > {out}"})
 
 
 (defrule samtools-sort
@@ -13,7 +13,7 @@
   {:wildcards [:sample :genome]
    :input "bwa-map.bam"
    :output "bam/sorted.bam"
-   :shell "samtools sort -T {x.sample} -O bam {in} > {out}"})
+   :shell "samtools sort -T {wildcards.sample} -O bam {in} > {out}"})
 
 
 (defrule samtools-index
