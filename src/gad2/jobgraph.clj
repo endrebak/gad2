@@ -68,3 +68,13 @@
   (let [pairs (jobgraph-pairs rulegraph rules wildcards)
         pairs2 (jobs-without-dependencies-pairs rulegraph rules wildcards)]
     (reduce add-dependency (dep/graph) (concat pairs pairs2))))
+
+
+(defn jobs-to-outpath [jobgraph]
+  ;; (filter #(-> % first keyword?)
+        (for [rule ((:dependents jobgraph))
+              :let [rule (-> deps first first)
+                    rulename (-> rule first name)
+                    wildcards (->> rule second sort flatten (map name))
+                    parts (flatten [rulename wildcards])]]
+          [rule (str/join "/" parts)]))

@@ -46,6 +46,7 @@ at https://www.gnu.org/software/classpath/license.html.
 ## How to
 
 ```
+(require '[clojure.string :as str])
 (require 'gad2.core)
 (require 'gad2.jobgraph)
 
@@ -60,10 +61,11 @@ at https://www.gnu.org/software/classpath/license.html.
   wildcards (-> rule second sort)] [rulename wildcards])
 
 ;; must apply over whole file
-(let [rule (-> deps first first)
-  rulename (-> rule first name)
-  wildcards (->> rule second sort flatten (map name))
-  parts (flatten [rulename wildcards])] (str/join "/" parts))
+(defn jobs-to-outpath []
+  (let [rule (-> deps first first)
+    rulename (-> rule first name)
+    wildcards (->> rule second sort flatten (map name))
+    parts (flatten [rulename wildcards])] (str/join "/" parts)))
 ```
 
 ## What remains?
