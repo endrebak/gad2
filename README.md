@@ -49,23 +49,33 @@ at https://www.gnu.org/software/classpath/license.html.
 (require '[clojure.string :as str])
 (require 'gad2.core)
 (require 'gad2.jobgraph)
+(require '[com.stuartsierra.dependency :as dep])
 
 (def jobgraph (gad2.core/jobgraph-from-config "examples/snakemake/config.edn"))
 
-(def rules (gad2.parse-rulefiles/read-all "examples/snakemake/rules.clj"))
+(def rules (gad2.parse-rulefiles/read-rules "examples/snakemake/rules.clj"))
 
-(def deps (:dependents jobgraph))
+(defn jobs-to-outpath [jobgraph]
+  (for [rule (filter #(-> % first first keyword?) (:dependents jobgraph))]
+    (let [rulename (-> rule first first)
+          wildcards (->> rule second first second)
+          wildcards-as-strings (->> wildcards vec sort flatten (map name))
+          parts (flatten [(name rulename) wildcards-as-strings])]
+      [[rulename wildcards] (str/join "/" parts)])))
 
-(let [rule (-> deps first first)
-  rulename (-> rule first)
-  wildcards (-> rule second sort)] [rulename wildcards])
 
-;; must apply over whole file
-(defn jobs-to-outpath []
-  (let [rule (-> deps first first)
-    rulename (-> rule first name)
-    wildcards (->> rule second sort flatten (map name))
-    parts (flatten [rulename wildcards])] (str/join "/" parts)))
+(def rulegraph #com.stuartsierra.dependency.MapDependencyGraph
+        {:dependencies {:bcftools-call #{:samtools-index :samtools-sort}
+                        :plot-quals #{:bcftools-call}
+                        :samtools-index #{:samtools-sort}
+                        :samtools-sort #{:bwa-map}}
+         :dependents {:bcftools-call #{:plot-quals}
+                      :bwa-map #{:samtools-sort}
+                      :samtools-index #{:bcftools-call}
+                      :samtools-sort #{:bcftools-call :samtools-index}}})
+
+(dep/immediate-dependencies jobgraph [:bcftools-call {:genome "hg19"}])
+#{["bam/sorted.bam.bai" {:sample "B", :genome "hg19"}] ["bam/sorted.bam" {:sample "B", :genome "hg19"}] ["bam/sorted.bam" {:sample "A", :genome "hg19"}] ["bam/sorted.bam.bai" {:sample "A", :genome "hg19"}]}
 ```
 
 ## What remains?

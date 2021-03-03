@@ -33,7 +33,7 @@
   {:wildcards [:sample :genome]
    :input "bwa-map.bam"
    :output "bam/sorted.bam"
-   :shell "samtools sort -T {x.sample} -O bam {in} > {out}"})
+   :shell "samtools sort -T {wildcards.sample} -O bam {in} > {out}"})
 
 
 (defrule samtools-index
@@ -93,5 +93,5 @@
                                       :input "bwa-map.bam",
                                       :name :samtools-sort,
                                       :output "bam/sorted.bam",
-                                      :shell "samtools sort -T {x.sample} -O bam {in} > {out}",
+                                      :shell "samtools sort -T {wildcards.sample} -O bam {in} > {out}",
                                       :wildcards [:sample :genome]}})

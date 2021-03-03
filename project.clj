@@ -15,7 +15,7 @@
                  [org.clojure/tools.logging "0.5.0"]
                  [midje "1.9.9"]]
   :plugins [[lein-ring "0.12.5"]]
-  :ring {:handler gad2.server/handler}
+  ;; :ring {:handler gad2.server/handler}
   :main ^:skip-aot gad2.core
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}})

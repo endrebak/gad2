@@ -36,6 +36,6 @@
 (defrule plot-quals
   {:input "all.vcf"
    :wildcards [:genome]
-   :output {:plot "quals.svg" :data "quals.tsv"}
+   :output ["quals.svg" "quals.tsv"]
    :shell "plot {in} -o {out.0}"
    :script "plot-quals.py"})

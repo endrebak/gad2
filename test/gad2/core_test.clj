@@ -1,6 +1,6 @@
-(ns gad2.core-test
-  (:require [clojure.test :refer :all]
-            [gad2.core :refer :all]))
+;; (ns gad2.core-test
+;;   (:require [clojure.test :refer :all]
+;;             [gad2.core :refer :all]))
 
 ;; (deftest a-test
 ;;   (testing "FIXME, I fail."

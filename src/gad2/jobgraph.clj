@@ -2,7 +2,8 @@
   (:require [gad2.wildcards :refer [deps-with-wildcards precompute-wildcards]]
             [gad2.helpers :refer [add-dependency]]
             [com.stuartsierra.dependency :as dep]
-            [clojure.set :as set]))
+            [clojure.set :as set]
+            [clojure.string :as str]))
 
 
 (defn get-files
@@ -70,11 +71,20 @@
     (reduce add-dependency (dep/graph) (concat pairs pairs2))))
 
 
-(defn jobs-to-outpath [jobgraph]
-  ;; (filter #(-> % first keyword?)
-        (for [rule ((:dependents jobgraph))
-              :let [rule (-> deps first first)
-                    rulename (-> rule first name)
-                    wildcards (->> rule second sort flatten (map name))
-                    parts (flatten [rulename wildcards])]]
-          [rule (str/join "/" parts)]))
+(defn jobs-to-outpath-dirname [jobgraph]
+  (for [rule (:dependents jobgraph)]
+    (let [rulename (-> rule first first)
+          wildcards (->> rule second first second)
+          wildcards-as-strings (->> wildcards vec sort flatten (map name))
+          parts (flatten [(name rulename) wildcards-as-strings])]
+      [[rulename wildcards] (str/join "/" parts)])))
+
+(defn jobs-to-outpath-basename [rules]
+  ;;; TODO: do
+  )
+
+(defn jobs-to-outptath [rules jobgraph]
+  (dirname)
+  (basename)
+  (merge)
+  )
