@@ -69,22 +69,3 @@
   (let [pairs (jobgraph-pairs rulegraph rules wildcards)
         pairs2 (jobs-without-dependencies-pairs rulegraph rules wildcards)]
     (reduce add-dependency (dep/graph) (concat pairs pairs2))))
-
-
-(defn jobs-to-outpath-dirname [jobgraph]
-  (for [rule (:dependents jobgraph)]
-    (let [rulename (-> rule first first)
-          wildcards (->> rule second first second)
-          wildcards-as-strings (->> wildcards vec sort flatten (map name))
-          parts (flatten [(name rulename) wildcards-as-strings])]
-      [[rulename wildcards] (str/join "/" parts)])))
-
-(defn jobs-to-outpath-basename [rules]
-  ;;; TODO: do
-  )
-
-(defn jobs-to-outptath [rules jobgraph]
-  (dirname)
-  (basename)
-  (merge)
-  )
