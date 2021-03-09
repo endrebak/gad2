@@ -1,19 +1,30 @@
-;; (ns gad2.core
-;;   (:gen-class)
-;;   (:use [hashp.core])
-;;   (:require [gad2.jobgraph]
-;;             ;; [gad2.server :as server]
-;;             [gad2.rulegraph :as rg]
-;;             [gad2.jobgraph :as jg]
-;;             [gad2.state :as state]
-;;             [gad2.nrepl :refer [start-nrepl]]
-;;             [gad2.parse-rulefiles :refer [read-rules]]
-;;             [hawk.core :as hawk]
-;;             [nrepl.server :refer [start-server stop-server]]
-;;             ;; [gad2.filewatch :refer [watcher]]
-;;             [clojure.edn :as edn]
-;;             [ring.adapter.jetty :as jetty]
-;;             [clojure.java.io :as io]))
+(ns gad2.core
+  (:gen-class)
+  (:use [hashp.core])
+  (:require [gad2.jobgraph]
+            ;; [gad2.server :as server]
+            [gad2.rulegraph :as rg]
+            [gad2.jobgraph :as jg]
+            [gad2.state :as state]
+            [gad2.nrepl :refer [start-nrepl]]
+            [gad2.parse-rulefiles :refer [read-rules]]
+            ;; [hawk.core :as hawk]
+            ;; [nrepl.server :refer [start-server stop-server]]
+            ;; [gad2.filewatch :refer [watcher]]
+            [clojure.edn :as edn]
+            [ring.adapter.jetty :as jetty]
+            [clojure.java.io :as io]))
+
+(defn jobgraph-from-config
+  [config-file]
+  (let [config-map (edn/read-string (slurp config-file))
+        rule-file (config-map :rule-file)
+        wildcards-file (config-map :wildcards-file)
+        rules (read-rules rule-file)
+        wildcards (edn/read-string (slurp wildcards-file))
+        rulegraph (rg/rulegraph rules)]
+    (jg/jobgraph rulegraph rules wildcards)))
+
 
 
 ;; (defn read-args
@@ -52,18 +63,6 @@
 ;;   (let []
 ;;     (hawk/stop! (@watchers :config-watcher))
 ;;     (add-watcher :config-watcher (config-files @config-file) config-handler)))
-
-
-;; (defn jobgraph-from-config
-;;   [config-file]
-;;   (let [config-map (edn/read-string (slurp config-file))
-;;         rule-file (config-map :rule-file)
-;;         wildcards-file (config-map :wildcards-file)
-;;         rules (read-rules rule-file)
-;;         wildcards (edn/read-string (slurp wildcards-file))
-;;         rulegraph (rg/rulegraph rules)]
-;;         (jg/jobgraph rulegraph rules wildcards)))
-
 
 ;; ;; update-config-paths
 ;; ;; collect-rules

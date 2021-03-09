@@ -1,10 +1,10 @@
 (ns gad2.find-paths
-  (:require [clojure.string :as str]))
+  (:require [clojure.string :as str]
+            [hashp.core]))
 
-
-(defn jobs-to-outpath-stem [jobgraph]
+(defn jobs-to-outpath-stem [dependents]
   (into {}
-        (for [rule (:dependents jobgraph)
+        (for [rule dependents
               :when (-> rule first first keyword?)]
           (let [rulename (-> rule first first)
                 wildcards (->> rule second first second)
@@ -13,18 +13,28 @@
             [[rulename wildcards] (str/join "/" parts)]))))
 
 (defn jobs-to-outpath-base [rules]
-  (into {}
-        (for [[rulename rule] rules
-              output (rule :output)]
-          [rulename (-> rule :output)])))
+  (apply merge-with concat
+         (for [[rulename rule] rules
+               :let [rule-output (rule :output)
+                     output (cond
+                              (string? rule-output) [rule-output]
+                              (map? rule-output) (vals rule-output)
+                              :default rule-output)]
+               :when (-> rule-output? #(not= % nil))]
+           {rulename output})))
 
+(defn merge-with-concat [& args]
+  (apply merge-with concat args))
 
 (defn jobs-to-outpath [rules jobgraph]
-  (into {}
-        (let [bases (jobs-to-outpath-base rules)
-              stems (jobs-to-outpath-stem jobgraph)]
-          (for [[job path] (:dependents jobgraph)
-                :let [rulename (first job)
-                      base (bases rulename)
-                      stem (stems job)]]
-            [job (str/join "/" [stem base])]))))
+  (apply merge-with merge-with-concat
+         (apply concat
+                (let [dependents (:dependents jobgraph)
+                      bases (jobs-to-outpath-base rules)
+                      stems (jobs-to-outpath-stem dependents)]
+                  (for [[job path] dependents
+                        :let [rulename (first job)
+                              stem (stems job)]
+                        :when (keyword? rulename)]
+                    (for [base (bases rulename)]
+                      {job {base [(str/join "/" [stem base])]}}))))))

@@ -49,20 +49,16 @@ at https://www.gnu.org/software/classpath/license.html.
 (require '[clojure.string :as str])
 (require 'gad2.core)
 (require 'gad2.jobgraph)
+(require '[gad2.find-paths :refer [jobs-to-outpath]])
 (require '[com.stuartsierra.dependency :as dep])
 
-(def jobgraph (gad2.core/jobgraph-from-config "examples/snakemake/config.edn"))
+(def jobgraph (gad2.core/jobgraph-from-config "examples/simple_example/config.edn"))
+(def rules (gad2.parse-rulefiles/read-rules "examples/simple_example/rules.clj"))
 
+(def jobgraph (gad2.core/jobgraph-from-config "examples/snakemake/config.edn"))
 (def rules (gad2.parse-rulefiles/read-rules "examples/snakemake/rules.clj"))
 
-(defn jobs-to-outpath [jobgraph]
-  (for [rule (filter #(-> % first first keyword?) (:dependents jobgraph))]
-    (let [rulename (-> rule first first)
-          wildcards (->> rule second first second)
-          wildcards-as-strings (->> wildcards vec sort flatten (map name))
-          parts (flatten [(name rulename) wildcards-as-strings])]
-      [[rulename wildcards] (str/join "/" parts)])))
-
+(def j->o (jobs-to-outpath rules jobgraph))
 
 (def rulegraph #com.stuartsierra.dependency.MapDependencyGraph
         {:dependencies {:bcftools-call #{:samtools-index :samtools-sort}
@@ -74,8 +70,11 @@ at https://www.gnu.org/software/classpath/license.html.
                       :samtools-index #{:bcftools-call}
                       :samtools-sort #{:bcftools-call :samtools-index}}})
 
+(def t (into {} (for [k (dep/topo-sort jobgraph) :when (-> k first keyword?)] [k (j->o k)])))
+
 (dep/immediate-dependencies jobgraph [:bcftools-call {:genome "hg19"}])
 #{["bam/sorted.bam.bai" {:sample "B", :genome "hg19"}] ["bam/sorted.bam" {:sample "B", :genome "hg19"}] ["bam/sorted.bam" {:sample "A", :genome "hg19"}] ["bam/sorted.bam.bai" {:sample "A", :genome "hg19"}]}
+
 ```
 
 ## What remains?
