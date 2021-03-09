@@ -49,11 +49,13 @@ at https://www.gnu.org/software/classpath/license.html.
 (require '[clojure.string :as str])
 (require 'gad2.core)
 (require 'gad2.jobgraph)
+(require 'gad2.rulegraph)
 (require '[gad2.find-paths :refer [jobs-to-outpath]])
 (require '[com.stuartsierra.dependency :as dep])
 
 (def jobgraph (gad2.core/jobgraph-from-config "examples/simple_example/config.edn"))
 (def rules (gad2.parse-rulefiles/read-rules "examples/simple_example/rules.clj"))
+(def rulegraph (gad2.rulegraph/rulegraph rules))
 
 (def jobgraph (gad2.core/jobgraph-from-config "examples/snakemake/config.edn"))
 (def rules (gad2.parse-rulefiles/read-rules "examples/snakemake/rules.clj"))
@@ -75,6 +77,7 @@ at https://www.gnu.org/software/classpath/license.html.
 (dep/immediate-dependencies jobgraph [:bcftools-call {:genome "hg19"}])
 #{["bam/sorted.bam.bai" {:sample "B", :genome "hg19"}] ["bam/sorted.bam" {:sample "B", :genome "hg19"}] ["bam/sorted.bam" {:sample "A", :genome "hg19"}] ["bam/sorted.bam.bai" {:sample "A", :genome "hg19"}]}
 
+(dep/immediate-dependents jobgraph [:bwa-map {:sample "A", :genome "hg19"}])
 ```
 
 ## What remains?

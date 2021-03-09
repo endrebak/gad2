@@ -12,4 +12,9 @@
 (facts "about `jobs-to-outpath`"
        (jobs-to-outpath rules jobgraph)
        =>
-       nil)
+       {[:bwa-map {:genome "hg19" :sample "A"}] {"bwa-map.bam" ["bwa-map/genome/hg19/sample/A/bwa-map.bam"]
+                                                 "bwa-map2.bam" ["bwa-map/genome/hg19/sample/A/bwa-map2.bam"]}
+        [:bwa-map {:genome "hg19" :sample "B"}] {"bwa-map.bam" ["bwa-map/genome/hg19/sample/B/bwa-map.bam"]
+                                                 "bwa-map2.bam" ["bwa-map/genome/hg19/sample/B/bwa-map2.bam"]}
+        [:samtools-sort {:genome "hg19" :sample "A"}] {"bam/sorted.bam" ["samtools-sort/genome/hg19/sample/A/bam/sorted.bam"]}
+        [:samtools-sort {:genome "hg19" :sample "B"}] {"bam/sorted.bam" ["samtools-sort/genome/hg19/sample/B/bam/sorted.bam"]}})
